@@ -1,166 +1,155 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Solicitação de Reserva de Material</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
-            padding: 20px;
-            line-height: 1.6;
-        }
-        .container {
-            max-width: 700px;
-            margin: auto;
-            background: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            min-height: 200px;
-        }
-        h1 {
-            color: #2c3e50;
-        }
-        label {
-            display: block;
-            margin: 15px 0 5px;
-            font-weight: bold;
-        }
-        select, input[type="text"], input[type="date"], input[type="time"], textarea {
-            width: 100%;
-            padding: 8px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-        }
-        .subgroup {
-            margin-top: 15px;
-        }
-        button {
-            background-color: #2c3e50;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-        button:hover {
-            background-color: #1a252f;
-        }
-        #mensagem-sucesso {
-            text-align: center;
-            padding: 30px;
-            font-size: 1.3em;
-            color: #155724;
-            background-color: #d4edda;
-            border: 1px solid #c3e6cb;
-            border-radius: 8px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Solicitação de Reserva de Material</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f4f9;
+      color: #333;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    label {
+      display: block;
+      margin: 15px 0 5px;
+      font-weight: bold;
+    }
+    select, input[type="text"], input[type="date"], input[type="time"], textarea {
+      width: 100%;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    .subgroup {
+      margin-top: 15px;
+    }
+    button {
+      background-color: #2c3e50;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:hover {
+      background-color: #1a252f;
+    }
+    .success-message {
+      text-align: center;
+      font-size: 20px;
+      color: green;
+      margin-top: 30px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container" id="conteudo">
-        <h1>SOLICITAÇÃO DE RESERVA DE MATERIAL</h1>
-        <p>
-            Este formulário destina-se à solicitação antecipada de materiais, reagentes e equipamentos necessários para a realização de práticas laboratoriais. O objetivo é garantir a organização, segurança e disponibilidade dos itens solicitados, otimizando o planejamento e a execução das atividades práticas.
-        </p>
-        <ul>
-            <li>Preencha todos os campos obrigatórios com atenção.</li>
-            <li>As solicitações devem ser enviadas com no mínimo 48 horas úteis de antecedência da data prevista para a prática.</li>
-            <li>A aprovação está sujeita à disponibilidade dos materiais e à conformidade com as normas de segurança do laboratório.</li>
-            <li>Em caso de dúvidas, entre em contato com a coordenação técnica do laboratório.</li>
-        </ul>
+  <div class="container" id="form-container">
+    <h1>SOLICITAÇÃO DE RESERVA DE MATERIAL</h1>
+    <p>
+      Este formulário destina-se à solicitação antecipada de materiais, reagentes e equipamentos necessários para a realização de práticas laboratoriais. O objetivo é garantir a organização, segurança e disponibilidade dos itens solicitados, otimizando o planejamento e a execução das atividades práticas.
+    </p>
+    <ul>
+      <li>Preencha todos os campos obrigatórios com atenção.</li>
+      <li>As solicitações devem ser enviadas com no mínimo 48 horas úteis de antecedência da data prevista para a prática.</li>
+      <li>A aprovação está sujeita à disponibilidade dos materiais e à conformidade com as normas de segurança do laboratório.</li>
+      <li>Em caso de dúvidas, entre em contato com a coordenação técnica do laboratório.</li>
+    </ul>
 
-        <form id="form-reserva" method="POST" onsubmit="return enviarFormulario(event)">
-            <input type="hidden" name="_captcha" value="false" />
-            <input type="hidden" name="_template" value="table" />
+    <form id="reserva-form">
+      <label for="docente">Nome do Docente:</label>
+      <input type="text" id="docente" name="Nome do Docente" required>
 
-            <label for="docente">Nome do Docente:</label>
-            <input type="text" id="docente" name="Nome do Docente" required />
+      <label for="data">Data da prática:</label>
+      <input type="date" id="data" name="Data da prática" required>
 
-            <label for="data">Data da prática:</label>
-            <input type="date" id="data" name="Data da prática" required />
+      <label for="hora">Hora da prática:</label>
+      <input type="time" id="hora" name="Hora da prática" required>
 
-            <label for="hora">Hora da prática:</label>
-            <input type="time" id="hora" name="Hora da prática" required />
+      <label for="atividade">Selecione a atividade:</label>
+      <select id="atividade" name="Atividade" required onchange="mostrarSubgrupo()">
+        <option value="">-- Escolha uma opção --</option>
+        <option value="tecnicas_basicas">Técnicas Básicas de Química</option>
+        <option value="fisico_quimica">Físico-Química Experimental</option>
+      </select>
 
-            <label for="atividade">Selecione a atividade:</label>
-            <select id="atividade" name="Atividade" required onchange="mostrarSubgrupo()">
-                <option value="">-- Escolha uma opção --</option>
-                <option value="tecnicas_basicas">Técnicas Básicas de Química</option>
-                <option value="fisico_quimica">Físico-Química Experimental</option>
-            </select>
+      <div id="subgrupo_tecnicas" class="subgroup" style="display: none;">
+        <label for="pratica_tecnicas">Prática:</label>
+        <select id="pratica_tecnicas" name="Prática - Técnicas Básicas">
+          <option value="Técnicas de pesagem">Técnicas de pesagem</option>
+          <option value="Medidas de volume">Medidas de volume</option>
+          <option value="Preparo de soluções">Preparo de soluções</option>
+        </select>
+      </div>
 
-            <div id="subgrupo_tecnicas" class="subgroup" style="display: none;">
-                <label for="pratica_tecnicas">Prática:</label>
-                <select id="pratica_tecnicas" name="Prática - Técnicas Básicas">
-                    <option value="Técnicas de pesagem">Técnicas de pesagem</option>
-                    <option value="Medidas de volume">Medidas de volume</option>
-                    <option value="Preparo de soluções">Preparo de soluções</option>
-                </select>
-            </div>
+      <div id="subgrupo_fisico" class="subgroup" style="display: none;">
+        <label for="pratica_fisico">Prática:</label>
+        <select id="pratica_fisico" name="Prática - Físico-Química Experimental">
+          <option value="Ponto de fusão">Ponto de fusão</option>
+          <option value="Ponto de ebulição">Ponto de ebulição</option>
+          <option value="Condutividade elétrica">Condutividade elétrica</option>
+          <option value="pH de soluções">pH de soluções</option>
+        </select>
+      </div>
 
-            <div id="subgrupo_fisico" class="subgroup" style="display: none;">
-                <label for="pratica_fisico">Prática:</label>
-                <select id="pratica_fisico" name="Prática - Físico-Química Experimental">
-                    <option value="Ponto de fusão">Ponto de fusão</option>
-                    <option value="Ponto de ebulição">Ponto de ebulição</option>
-                    <option value="Condutividade elétrica">Condutividade elétrica</option>
-                    <option value="pH de soluções">pH de soluções</option>
-                </select>
-            </div>
+      <label for="observacoes">Observações Adicionais para o Experimento:</label>
+      <textarea id="observacoes" name="Observações" rows="4" placeholder="Ex: trazer reagente X, usar luvas nitrílicas..."></textarea>
 
-            <label for="observacoes">Observações Adicionais para o Experimento:</label>
-            <textarea id="observacoes" name="Observações" rows="4" placeholder="Ex: trazer reagente X, usar luvas nitrílicas..."></textarea>
+      <button type="submit">Enviar Solicitação</button>
+    </form>
+  </div>
 
-            <button type="submit">Enviar Solicitação</button>
-        </form>
-    </div>
+  <script>
+    function mostrarSubgrupo() {
+      const atividade = document.getElementById('atividade').value;
+      document.getElementById('subgrupo_tecnicas').style.display = 'none';
+      document.getElementById('subgrupo_fisico').style.display = 'none';
 
-    <script>
-        function mostrarSubgrupo() {
-            const atividade = document.getElementById('atividade').value;
-            document.getElementById('subgrupo_tecnicas').style.display = 'none';
-            document.getElementById('subgrupo_fisico').style.display = 'none';
+      if (atividade === 'tecnicas_basicas') {
+        document.getElementById('subgrupo_tecnicas').style.display = 'block';
+      } else if (atividade === 'fisico_quimica') {
+        document.getElementById('subgrupo_fisico').style.display = 'block';
+      }
+    }
 
-            if (atividade === 'tecnicas_basicas') {
-                document.getElementById('subgrupo_tecnicas').style.display = 'block';
-            } else if (atividade === 'fisico_quimica') {
-                document.getElementById('subgrupo_fisico').style.display = 'block';
-            }
+    document.getElementById('reserva-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const form = e.target;
+      const formData = new FormData(form);
+
+      fetch('https://colaquiifs.github.io/index.html/', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => {
+        if (response.ok) {
+          document.getElementById('form-container').innerHTML = `
+            <div class="success-message">Solicitação Recebida com Sucesso, Obrigado!</div>
+          `;
+        } else {
+          alert("Erro ao enviar solicitação. Tente novamente.");
         }
-
-        function validarSelecao() {
-            const atividade = document.getElementById("atividade").value;
-            if (!atividade) {
-                alert("Selecione uma atividade.");
-                return false;
-            }
-            return true;
-        }
-
-        function enviarFormulario(event) {
-            event.preventDefault();
-
-            if (!validarSelecao()) {
-                return false;
-            }
-
-            // Substitui o conteúdo da div "conteudo" pela mensagem de agradecimento
-            const conteudo = document.getElementById('conteudo');
-            conteudo.innerHTML = `
-                <div id="mensagem-sucesso">
-                    <h1>Solicitação Recebida com Sucesso</h1>
-                    <p>Obrigado!</p>
-                </div>
-            `;
-
-            return false;
-        }
-    </script>
+      })
+      .catch(error => {
+        alert("Erro de conexão: " + error.message);
+      });
+    });
+  </script>
 </body>
 </html>
