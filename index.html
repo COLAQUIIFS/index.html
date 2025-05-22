@@ -51,19 +51,10 @@
         button:hover {
             background-color: #1a252f;
         }
-        #mensagem-sucesso {
-            text-align: center;
-            padding: 30px;
-            font-size: 1.3em;
-            color: #155724;
-            background-color: #d4edda;
-            border: 1px solid #c3e6cb;
-            border-radius: 8px;
-        }
     </style>
 </head>
 <body>
-    <div class="container" id="conteudo">
+    <div class="container">
         <h1>SOLICITAÇÃO DE RESERVA DE MATERIAL</h1>
         <p>
             Este formulário destina-se à solicitação antecipada de materiais, reagentes e equipamentos necessários para a realização de práticas laboratoriais. O objetivo é garantir a organização, segurança e disponibilidade dos itens solicitados, otimizando o planejamento e a execução das atividades práticas.
@@ -75,18 +66,21 @@
             <li>Em caso de dúvidas, entre em contato com a coordenação técnica do laboratório.</li>
         </ul>
 
-        <<form action="https://formsubmit.co/colaqui.aracaju@ifs.edu.br" method="POST" onsubmit="return validarSelecao()">
-            <input type="hidden" name="_captcha" value="false" />
-            <input type="hidden" name="_template" value="table" />
+        <form action="https://formsubmit.co/colaqui.aracaju@ifs.edu.br" method="POST" onsubmit="return validarSelecao()">
+            <!-- Configurações do FormSubmit -->
+            <input type="hidden" name="_captcha" value="false">
+            <input type="hidden" name="_template" value="table">
+            <!-- Se quiser redirecionar após envio: -->
+            <!-- <input type="hidden" name="_next" value="https://seusite.com/obrigado.html"> -->
 
             <label for="docente">Nome do Docente:</label>
-            <input type="text" id="docente" name="Nome do Docente" required />
+            <input type="text" id="docente" name="Nome do Docente" required>
 
             <label for="data">Data da prática:</label>
-            <input type="date" id="data" name="Data da prática" required />
+            <input type="date" id="data" name="Data da prática" required>
 
             <label for="hora">Hora da prática:</label>
-            <input type="time" id="hora" name="Hora da prática" required />
+            <input type="time" id="hora" name="Hora da prática" required>
 
             <label for="atividade">Selecione a atividade:</label>
             <select id="atividade" name="Atividade" required onchange="mostrarSubgrupo()">
@@ -141,25 +135,6 @@
                 return false;
             }
             return true;
-        }
-
-        function enviarFormulario(event) {
-            event.preventDefault();
-
-            if (!validarSelecao()) {
-                return false;
-            }
-
-            // Substitui o conteúdo da div "conteudo" pela mensagem de agradecimento
-            const conteudo = document.getElementById('conteudo');
-            conteudo.innerHTML = `
-                <div id="mensagem-sucesso">
-                    <h1>Solicitação Recebida com Sucesso</h1>
-                    <p>Obrigado!</p>
-                </div>
-            `;
-
-            return false;
         }
     </script>
 </body>
