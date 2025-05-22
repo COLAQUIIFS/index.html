@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solicitação de Reserva de Material</title>
     <style>
         body {
@@ -19,7 +19,6 @@
             padding: 30px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            min-height: 200px;
         }
         h1 {
             color: #2c3e50;
@@ -51,19 +50,10 @@
         button:hover {
             background-color: #1a252f;
         }
-        #mensagem-sucesso {
-            text-align: center;
-            padding: 30px;
-            font-size: 1.3em;
-            color: #155724;
-            background-color: #d4edda;
-            border: 1px solid #c3e6cb;
-            border-radius: 8px;
-        }
     </style>
 </head>
 <body>
-    <div class="container" id="conteudo">
+    <div class="container">
         <h1>SOLICITAÇÃO DE RESERVA DE MATERIAL</h1>
         <p>
             Este formulário destina-se à solicitação antecipada de materiais, reagentes e equipamentos necessários para a realização de práticas laboratoriais. O objetivo é garantir a organização, segurança e disponibilidade dos itens solicitados, otimizando o planejamento e a execução das atividades práticas.
@@ -71,3 +61,95 @@
         <ul>
             <li>Preencha todos os campos obrigatórios com atenção.</li>
             <li>As solicitações devem ser enviadas com no mínimo 48 horas úteis de antecedência da data prevista para a prática.</li>
+            <li>A aprovação está sujeita à disponibilidade dos materiais e à conformidade com as normas de segurança do laboratório.</li>
+            <li>Em caso de dúvidas, entre em contato com a coordenação técnica do laboratório.</li>
+        </ul>
+
+        <form onsubmit="enviarFormulario(event)">
+            <label for="docente">Nome do Docente:</label>
+            <input type="text" id="docente" required>
+
+            <label for="data">Data da prática:</label>
+            <input type="date" id="data" required>
+
+            <label for="hora">Hora da prática:</label>
+            <input type="time" id="hora" required>
+
+            <label for="atividade">Selecione a atividade:</label>
+            <select id="atividade" required onchange="mostrarSubgrupo()">
+                <option value="">-- Escolha uma opção --</option>
+                <option value="tecnicas_basicas">Técnicas Básicas de Química</option>
+                <option value="fisico_quimica">Físico-Química Experimental</option>
+            </select>
+
+            <div id="subgrupo_tecnicas" class="subgroup" style="display: none;">
+                <label for="pratica_tecnicas">Prática:</label>
+                <select id="pratica_tecnicas">
+                    <option value="Técnicas de pesagem">Técnicas de pesagem</option>
+                    <option value="Medidas de volume">Medidas de volume</option>
+                    <option value="Preparo de soluções">Preparo de soluções</option>
+                </select>
+            </div>
+
+            <div id="subgrupo_fisico" class="subgroup" style="display: none;">
+                <label for="pratica_fisico">Prática:</label>
+                <select id="pratica_fisico">
+                    <option value="Ponto de fusão">Ponto de fusão</option>
+                    <option value="Ponto de ebulição">Ponto de ebulição</option>
+                    <option value="Condutividade elétrica">Condutividade elétrica</option>
+                    <option value="pH de soluções">pH de soluções</option>
+                </select>
+            </div>
+
+            <label for="observacoes">Observações Adicionais para o Experimento:</label>
+            <textarea id="observacoes" rows="4" placeholder="Ex: trazer reagente X, usar luvas nitrílicas..."></textarea>
+
+            <button type="submit">Enviar Solicitação</button>
+        </form>
+    </div>
+
+    <script>
+        function mostrarSubgrupo() {
+            const atividade = document.getElementById('atividade').value;
+            document.getElementById('subgrupo_tecnicas').style.display = 'none';
+            document.getElementById('subgrupo_fisico').style.display = 'none';
+
+            if (atividade === 'tecnicas_basicas') {
+                document.getElementById('subgrupo_tecnicas').style.display = 'block';
+            } else if (atividade === 'fisico_quimica') {
+                document.getElementById('subgrupo_fisico').style.display = 'block';
+            }
+        }
+
+        function enviarFormulario(event) {
+            event.preventDefault();
+
+            const dados = {
+                docente: document.getElementById("docente").value,
+                data: document.getElementById("data").value,
+                hora: document.getElementById("hora").value,
+                atividade: document.getElementById("atividade").value,
+                pratica: document.getElementById("pratica_tecnicas").value || document.getElementById("pratica_fisico").value,
+                observacoes: document.getElementById("observacoes").value
+            };
+
+            fetch("URL_DO_SEU_SCRIPT_DO_APPS_SCRIPT", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dados)
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = "confirmacao.html";
+                } else {
+                    alert("Erro ao enviar. Tente novamente mais tarde.");
+                }
+            })
+            .catch(error => {
+                console.error("Erro:", error);
+                alert("Erro de conexão. Tente novamente mais tarde.");
+            });
+        }
+    </script>
+</body>
+</html>
