@@ -50,31 +50,39 @@
     button:hover {
       background-color: #1a252f;
     }
-    .sucesso {
+    .success-message {
       text-align: center;
-      font-size: 1.2rem;
+      font-size: 20px;
       color: green;
-      margin-top: 20px;
+      margin-top: 30px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="container" id="form-container">
     <h1>SOLICITAÇÃO DE RESERVA DE MATERIAL</h1>
-    <p>Preencha todos os campos abaixo:</p>
+    <p>
+      Este formulário destina-se à solicitação antecipada de materiais, reagentes e equipamentos necessários para a realização de práticas laboratoriais. O objetivo é garantir a organização, segurança e disponibilidade dos itens solicitados, otimizando o planejamento e a execução das atividades práticas.
+    </p>
+    <ul>
+      <li>Preencha todos os campos obrigatórios com atenção.</li>
+      <li>As solicitações devem ser enviadas com no mínimo 48 horas úteis de antecedência da data prevista para a prática.</li>
+      <li>A aprovação está sujeita à disponibilidade dos materiais e à conformidade com as normas de segurança do laboratório.</li>
+      <li>Em caso de dúvidas, entre em contato com a coordenação técnica do laboratório.</li>
+    </ul>
 
-    <form id="formReserva">
+    <form id="reserva-form">
       <label for="docente">Nome do Docente:</label>
-      <input type="text" id="docente" name="docente" required />
+      <input type="text" id="docente" name="Nome do Docente" required>
 
       <label for="data">Data da prática:</label>
-      <input type="date" id="data" name="data" required />
+      <input type="date" id="data" name="Data da prática" required>
 
       <label for="hora">Hora da prática:</label>
-      <input type="time" id="hora" name="hora" required />
+      <input type="time" id="hora" name="Hora da prática" required>
 
       <label for="atividade">Selecione a atividade:</label>
-      <select id="atividade" name="atividade" required onchange="mostrarSubgrupo()">
+      <select id="atividade" name="Atividade" required onchange="mostrarSubgrupo()">
         <option value="">-- Escolha uma opção --</option>
         <option value="tecnicas_basicas">Técnicas Básicas de Química</option>
         <option value="fisico_quimica">Físico-Química Experimental</option>
@@ -82,7 +90,7 @@
 
       <div id="subgrupo_tecnicas" class="subgroup" style="display: none;">
         <label for="pratica_tecnicas">Prática:</label>
-        <select id="pratica_tecnicas" name="pratica_tecnicas">
+        <select id="pratica_tecnicas" name="Prática - Técnicas Básicas">
           <option value="Técnicas de pesagem">Técnicas de pesagem</option>
           <option value="Medidas de volume">Medidas de volume</option>
           <option value="Preparo de soluções">Preparo de soluções</option>
@@ -91,7 +99,7 @@
 
       <div id="subgrupo_fisico" class="subgroup" style="display: none;">
         <label for="pratica_fisico">Prática:</label>
-        <select id="pratica_fisico" name="pratica_fisico">
+        <select id="pratica_fisico" name="Prática - Físico-Química Experimental">
           <option value="Ponto de fusão">Ponto de fusão</option>
           <option value="Ponto de ebulição">Ponto de ebulição</option>
           <option value="Condutividade elétrica">Condutividade elétrica</option>
@@ -99,15 +107,11 @@
         </select>
       </div>
 
-      <label for="observacoes">Observações:</label>
-      <textarea id="observacoes" name="observacoes" rows="4"></textarea>
+      <label for="observacoes">Observações Adicionais para o Experimento:</label>
+      <textarea id="observacoes" name="Observações" rows="4" placeholder="Ex: trazer reagente X, usar luvas nitrílicas..."></textarea>
 
       <button type="submit">Enviar Solicitação</button>
     </form>
-
-    <div id="mensagem" class="sucesso" style="display: none;">
-      Solicitação Recebida com Sucesso. Obrigado!
-    </div>
   </div>
 
   <script>
@@ -123,29 +127,27 @@
       }
     }
 
-    document.getElementById('formReserva').addEventListener('submit', function(e) {
+    document.getElementById('reserva-form').addEventListener('submit', function(e) {
       e.preventDefault();
 
       const form = e.target;
-      const dados = new FormData(form);
-      const json = Object.fromEntries(dados.entries());
+      const formData = new FormData(form);
 
       fetch('https://colaquiifs.github.io/index.html/', {
         method: 'POST',
-        body: JSON.stringify(json),
-        headers: { 'Content-Type': 'application/json' },
+        body: formData
       })
       .then(response => {
         if (response.ok) {
-          form.reset();
-          document.getElementById('mensagem').style.display = 'block';
+          document.getElementById('form-container').innerHTML = `
+            <div class="success-message">Solicitação Recebida com Sucesso, Obrigado!</div>
+          `;
         } else {
-          alert("Erro ao enviar. Tente novamente.");
+          alert("Erro ao enviar solicitação. Tente novamente.");
         }
       })
       .catch(error => {
-        alert("Erro ao conectar com o servidor.");
-        console.error(error);
+        alert("Erro de conexão: " + error.message);
       });
     });
   </script>
