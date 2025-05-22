@@ -51,10 +51,19 @@
         button:hover {
             background-color: #1a252f;
         }
+        #mensagem-sucesso {
+            text-align: center;
+            padding: 30px;
+            font-size: 1.3em;
+            color: #155724;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="conteudo">
         <h1>SOLICITAÇÃO DE RESERVA DE MATERIAL</h1>
         <p>
             Este formulário destina-se à solicitação antecipada de materiais, reagentes e equipamentos necessários para a realização de práticas laboratoriais. O objetivo é garantir a organização, segurança e disponibilidade dos itens solicitados, otimizando o planejamento e a execução das atividades práticas.
@@ -66,12 +75,12 @@
             <li>Em caso de dúvidas, entre em contato com a coordenação técnica do laboratório.</li>
         </ul>
 
-        <form action="https://formsubmit.co/colaqui.aracaju@ifs.edu.br" method="POST" onsubmit="return validarSelecao()">
-            <!-- Configurações do FormSubmit -->
+        <form id="form-reserva" method="POST" onsubmit="return enviarFormulario(event)">
             <input type="hidden" name="_captcha" value="false">
             <input type="hidden" name="_template" value="table">
-            <!-- Se quiser redirecionar após envio: -->
-            <!-- <input type="hidden" name="_next" value="https://seusite.com/obrigado.html"> -->
+            <input type="hidden" name="_subject" value="Nova solicitação de reserva">
+            <!-- FormSubmit URL -->
+            <input type="hidden" name="email" value="colaqui.aracaju@ifs.edu.br">
 
             <label for="docente">Nome do Docente:</label>
             <input type="text" id="docente" name="Nome do Docente" required>
@@ -135,6 +144,40 @@
                 return false;
             }
             return true;
+        }
+
+        async function enviarFormulario(event) {
+            event.preventDefault();
+
+            if (!validarSelecao()) return false;
+
+            const form = event.target;
+            const data = new FormData(form);
+
+            try {
+                const response = await fetch("https://formsubmit.co/ajax/colaqui.aracaju@ifs.edu.br", {
+                    method: "POST",
+                    headers: { "Accept": "application/json" },
+                    body: data
+                });
+
+                if (response.ok) {
+                    // Substitui o formulário pelo agradecimento
+                    const conteudo = document.getElementById('conteudo');
+                    conteudo.innerHTML = `
+                        <div id="mensagem-sucesso">
+                            <h1>Solicitação Recebida com Sucesso</h1>
+                            <p>Obrigado!</p>
+                        </div>
+                    `;
+                } else {
+                    alert("Erro ao enviar o formulário. Tente novamente mais tarde.");
+                }
+            } catch (error) {
+                alert("Erro na comunicação com o servidor. Verifique sua conexão.");
+            }
+
+            return false;
         }
     </script>
 </body>
