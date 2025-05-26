@@ -51,6 +51,15 @@
         button:hover {
             background-color: #1a252f;
         }
+        #mensagemSucesso {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #e8f5e9;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #4CAF50;
+        }
     </style>
 </head>
 <body>
@@ -114,13 +123,18 @@
 
             <button type="submit">Enviar Solicitação</button>
         </form>
-        <div id="mensagemSucesso" style="display:none; margin-top: 20px; font-weight: bold; color: green;">
-            Solicitação Recebida com Sucesso!
+
+        <div id="mensagemSucesso">
+            <h3 style="color: #2c3e50; margin-bottom: 15px;">✅ Reserva Solicitada com Sucesso!</h3>
+            <p style="color: #4CAF50; font-size: 1.1em;">
+                Obrigado por utilizar nosso sistema.<br>
+                Você receberá uma confirmação por e-mail em até 24 horas úteis.
+            </p>
         </div>
     </div>
 
     <script>
-        // Funções de subgrupo (mantidas do original)
+        // Funções de subgrupo
         function mostrarSubgrupo() {
             const atividade = document.getElementById('atividade').value;
             document.getElementById('subgrupo_tecnicas').style.display = 'none';
@@ -133,13 +147,13 @@
             }
         }
 
-        // Validação de datas e horas (novo)
+        // Validação de datas e horas
         function isDiaUtil(date) {
             const dia = date.getDay();
-            return dia !== 0 && dia !== 6; // 0 = Domingo, 6 = Sábado
+            return dia !== 0 && dia !== 6;
         }
 
-        function ajustarParaHorarioComercial(date) {
+        function ajustarParaHorarioUtil(date) {
             const novaData = new Date(date);
             const hora = novaData.getHours();
             
@@ -153,8 +167,8 @@
         }
 
         function calcularHorasUteisRestantes(dataSelecionada, horaSelecionada) {
-            let dataInicio = ajustarParaHorarioComercial(new Date());
-            let dataFim = ajustarParaHorarioComercial(new Date(`${dataSelecionada}T${horaSelecionada}`));
+            let dataInicio = ajustarParaHorarioUtil(new Date());
+            let dataFim = ajustarParaHorarioUtil(new Date(`${dataSelecionada}T${horaSelecionada}`));
             
             let horasUteis = 0;
             let dataAtual = new Date(dataInicio);
@@ -188,7 +202,7 @@
             if (horasUteis < 48) {
                 const confirmar = confirm(
                     `ATENÇÃO: Prática agendada com ${horasUteis} horas úteis de antecedência!\n\n` +
-                    '• Horário comercial: 7h às 19h (dias úteis)\n' +
+                    '• Horário útil para solicitação: 7h às 19h (dias úteis)\n' +
                     '• Pedidos após 19h considerados no próximo dia útil\n\n' +
                     'Deseja solicitar mesmo assim?'
                 );
@@ -200,20 +214,51 @@
         }
 
         // Event listeners
-        document.getElementById('formulario').addEventListener('submit', function(event) {
-            if (!validarFormulario()) {
-                event.preventDefault();
-                return;
-            }
+        document.getElementById('formulario').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            if (!validarFormulario()) return;
             
             const docente = document.getElementById('docente').value.trim();
             if (!docente) {
                 alert("Por favor, preencha o nome do docente.");
-                event.preventDefault();
                 return;
             }
             
             document.getElementById('subject').value = `Solicitação de reserva - Docente: ${docente}`;
+            
+            const formData = new FormData(this);
+            const submitButton = this.querySelector('button[type="submit"]');
+            
+            try {
+                submitButton.disabled = true;
+                submitButton.innerHTML = 'Enviando...';
+                
+                const response = await fetch(this.action, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    this.style.display = 'none';
+                    document.getElementById('mensagemSucesso').style.display = 'block';
+                    
+                    setTimeout(() => {
+                        this.reset();
+                        this.style.display = 'block';
+                        document.getElementById('mensagemSucesso').style.display = 'none';
+                        document.getElementById('subgrupo_tecnicas').style.display = 'none';
+                        document.getElementById('subgrupo_fisico').style.display = 'none';
+                    }, 5000);
+                } else {
+                    throw new Error('Falha no envio');
+                }
+            } catch (error) {
+                alert('Erro ao enviar solicitação. Por favor, tente novamente.');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.innerHTML = 'Enviar Solicitação';
+            }
         });
 
         // Bloqueio de datas passadas
