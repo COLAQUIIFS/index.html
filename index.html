@@ -1,137 +1,251 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Solicitação de Reserva de Material</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitação de Reserva - IFS</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
-            padding: 20px;
-            line-height: 1.6;
+        :root {
+            --primary-color: #00539F;
+            --secondary-color: #E31837;
+            --light-gray: #f8f9fa;
+            --text-color: #2d3748;
         }
-        .container {
-            max-width: 700px;
-            margin: auto;
-            background: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            min-height: 200px;
-        }
-        h1 {
-            color: #2c3e50;
-        }
-        label {
-            display: block;
-            margin: 15px 0 5px;
-            font-weight: bold;
-        }
-        select, input[type="text"], input[type="date"], input[type="time"], textarea {
-            width: 100%;
-            padding: 8px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
+
+        * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
-        .subgroup {
-            margin-top: 15px;
+
+        body {
+            font-family: 'Roboto', 'Segoe UI', sans-serif;
+            background: var(--light-gray);
+            color: var(--text-color);
+            line-height: 1.6;
         }
-        button {
-            background-color: #2c3e50;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-        button:hover {
-            background-color: #1a252f;
-        }
-        #mensagemSucesso {
-            display: none;
-            margin-top: 20px;
-            padding: 20px;
-            background: #e8f5e9;
-            border-radius: 8px;
+
+        .header {
+            background: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             text-align: center;
-            border: 2px solid #4CAF50;
+        }
+
+        .logo {
+            width: 180px;
+            margin-bottom: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .main-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color) 70%, var(--secondary-color) 30%);
+        }
+
+        .form-title {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.8rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            background: var(--light-gray);
+            transition: transform 0.2s ease;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0,83,159,0.1);
+            outline: none;
+        }
+
+        .subgroup {
+            margin-top: 1rem;
+            padding-left: 1rem;
+            border-left: 3px solid var(--secondary-color);
+        }
+
+        button {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 2rem auto 0;
+        }
+
+        button:hover {
+            background: #003f6d;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,83,159,0.2);
+        }
+
+        .success-message {
+            background: #f0fff4;
+            border: 2px solid #48bb78;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 0 1rem;
+            }
+            .form-card {
+                padding: 1.5rem;
+            }
+            button {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>SOLICITAÇÃO DE RESERVA DE MATERIAL</h1>
-        <p>
-            Este formulário destina-se à solicitação antecipada de materiais, reagentes e equipamentos necessários para a realização de práticas laboratoriais. O objetivo é garantir a organização, segurança e disponibilidade dos itens solicitados, otimizando o planejamento e a execução das atividades práticas.
-        </p>
-        <ul>
-            <li>Preencha todos os campos obrigatórios com atenção.</li>
-            <li>As solicitações devem ser enviadas com no mínimo 48 horas úteis de antecedência da data prevista para a prática.</li>
-            <li>A aprovação está sujeita à disponibilidade dos materiais e à conformidade com as normas de segurança do laboratório.</li>
-            <li>Em caso de dúvidas, entre em contato com a coordenação técnica do laboratório.</li>
-        </ul>
+    <header class="header">
+        <!-- ADICIONE SUA LOGO AQUI -->
+        <img src="[data:image/png;base64,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]" alt="Logo IFS" class="logo">
+    </header>
 
-        <form id="formulario" action="https://formsubmit.co/colaqui.aracaju@ifs.edu.br" method="POST">
-            <input type="hidden" name="_captcha" value="false">
-            <input type="hidden" name="_template" value="table">
-            <input type="hidden" name="_subject" id="subject" value="Solicitação de reserva - Docente: ">
+    <main class="main-container">
+        <div class="form-card">
+            <h1 class="form-title">Solicitação de Reserva de Materiais</h1>
+            
+            <form id="formulario" action="https://formsubmit.co/colaqui.aracaju@ifs.edu.br" method="POST">
+                <input type="hidden" name="_captcha" value="false">
+                <input type="hidden" name="_template" value="table">
+                <input type="hidden" name="_subject" id="subject" value="Solicitação de reserva - Docente: ">
 
-            <label for="docente">Nome do Docente:</label>
-            <input type="text" id="docente" name="Nome do Docente" required>
+                <div class="form-group">
+                    <label for="docente">Nome do Docente:</label>
+                    <input type="text" id="docente" name="Nome do Docente" required>
+                </div>
 
-            <label for="emailDocente">E-mail para Confirmação (Docente):</label>
-            <input type="email" id="emailDocente" name="E-mail para Confirmação" placeholder="email@exemplo.com">
+                <div class="form-group">
+                    <label for="emailDocente">E-mail para Confirmação:</label>
+                    <input type="email" id="emailDocente" name="E-mail para Confirmação" placeholder="email@exemplo.com" required>
+                </div>
 
-            <label for="data">Data da prática:</label>
-            <input type="date" id="data" name="Data da prática" required min="">
+                <div class="form-group">
+                    <label for="data">Data da Prática:</label>
+                    <input type="date" id="data" name="Data da prática" required min="">
+                </div>
 
-            <label for="hora">Hora da prática:</label>
-            <input type="time" id="hora" name="Hora da prática" required>
+                <div class="form-group">
+                    <label for="hora">Hora da Prática:</label>
+                    <input type="time" id="hora" name="Hora da prática" required>
+                </div>
 
-            <label for="atividade">Selecione a atividade:</label>
-            <select id="atividade" name="Atividade" required onchange="mostrarSubgrupo()">
-                <option value="">-- Escolha uma opção --</option>
-                <option value="tecnicas_basicas">Técnicas Básicas de Química</option>
-                <option value="fisico_quimica">Físico-Química Experimental</option>
-            </select>
+                <div class="form-group">
+                    <label for="atividade">Tipo de Atividade:</label>
+                    <select id="atividade" name="Atividade" required onchange="mostrarSubgrupo()">
+                        <option value="">-- Selecione --</option>
+                        <option value="tecnicas_basicas">Técnicas Básicas de Química</option>
+                        <option value="fisico_quimica">Físico-Química Experimental</option>
+                    </select>
+                </div>
 
-            <div id="subgrupo_tecnicas" class="subgroup" style="display: none;">
-                <label for="pratica_tecnicas">Prática:</label>
-                <select id="pratica_tecnicas" name="Prática - Técnicas Básicas">
-                    <option value="Técnicas de pesagem">Técnicas de pesagem</option>
-                    <option value="Medidas de volume">Medidas de volume</option>
-                    <option value="Preparo de soluções">Preparo de soluções</option>
-                </select>
+                <div id="subgrupo_tecnicas" class="subgroup" style="display: none;">
+                    <label for="pratica_tecnicas">Prática Específica:</label>
+                    <select id="pratica_tecnicas" name="Prática - Técnicas Básicas">
+                        <option value="Técnicas de pesagem">Técnicas de pesagem</option>
+                        <option value="Medidas de volume">Medidas de volume</option>
+                        <option value="Preparo de soluções">Preparo de soluções</option>
+                    </select>
+                </div>
+
+                <div id="subgrupo_fisico" class="subgroup" style="display: none;">
+                    <label for="pratica_fisico">Prática Específica:</label>
+                    <select id="pratica_fisico" name="Prática - Físico-Química Experimental">
+                        <option value="Ponto de fusão">Ponto de fusão</option>
+                        <option value="Ponto de ebulição">Ponto de ebulição</option>
+                        <option value="Condutividade elétrica">Condutividade elétrica</option>
+                        <option value="pH de soluções">pH de soluções</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="observacoes">Observações:</label>
+                    <textarea id="observacoes" name="Observações" rows="4" 
+                    placeholder="Informações adicionais (reagentes especiais, equipamentos, medidas de segurança..."></textarea>
+                </div>
+
+                <button type="submit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-send">
+                        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                    </svg>
+                    Enviar Solicitação
+                </button>
+            </form>
+
+            <div id="mensagemSucesso" class="success-message" style="display: none;">
+                <h3 style="color: #2c3e50; margin-bottom: 15px;">✅ Reserva Registrada!</h3>
+                <p style="color: #4CAF50; font-size: 1.1em;">
+                    Sua solicitação foi recebida com sucesso.<br>
+                    Confirmação será enviada por e-mail em até 24h úteis.
+                </p>
             </div>
-
-            <div id="subgrupo_fisico" class="subgroup" style="display: none;">
-                <label for="pratica_fisico">Prática:</label>
-                <select id="pratica_fisico" name="Prática - Físico-Química Experimental">
-                    <option value="Ponto de fusão">Ponto de fusão</option>
-                    <option value="Ponto de ebulição">Ponto de ebulição</option>
-                    <option value="Condutividade elétrica">Condutividade elétrica</option>
-                    <option value="pH de soluções">pH de soluções</option>
-                </select>
-            </div>
-
-            <label for="observacoes">Observações Adicionais para o Experimento:</label>
-            <textarea id="observacoes" name="Observações" rows="4" placeholder="Ex: trazer reagente X, usar luvas nitrílicas..."></textarea>
-
-            <button type="submit">Enviar Solicitação</button>
-        </form>
-
-        <div id="mensagemSucesso">
-            <h3 style="color: #2c3e50; margin-bottom: 15px;">✅ Reserva Solicitada com Sucesso!</h3>
-            <p style="color: #4CAF50; font-size: 1.1em;">
-                Obrigado por utilizar nosso sistema.<br>
-                Você receberá uma confirmação por e-mail em até 24 horas úteis.
-            </p>
         </div>
-    </div>
+    </main>
 
     <script>
         // Funções de subgrupo
@@ -187,7 +301,9 @@
         }
 
         // Validação principal
-        function validarFormulario() {
+        async function validarFormulario(event) {
+            event.preventDefault();
+            
             const atividade = document.getElementById("atividade").value;
             const data = document.getElementById("data").value;
             const hora = document.getElementById("hora").value;
@@ -202,70 +318,50 @@
             if (horasUteis < 48) {
                 const confirmar = confirm(
                     `ATENÇÃO: Prática agendada com ${horasUteis} horas úteis de antecedência!\n\n` +
-                    '• Horário útil para solicitação: 7h às 19h (dias úteis)\n' +
-                    '• Pedidos após 19h considerados no próximo dia útil\n\n' +
                     'Deseja solicitar mesmo assim?'
                 );
                 
-                return confirmar;
+                if (!confirmar) return false;
             }
-            
-            return true;
-        }
 
-        // Event listeners
-        document.getElementById('formulario').addEventListener('submit', async function(event) {
-            event.preventDefault();
-            
-            if (!validarFormulario()) return;
-            
-            const docente = document.getElementById('docente').value.trim();
-            if (!docente) {
-                alert("Por favor, preencha o nome do docente.");
-                return;
-            }
-            
-            document.getElementById('subject').value = `Solicitação de reserva - Docente: ${docente}`;
-            
-            const formData = new FormData(this);
-            const submitButton = this.querySelector('button[type="submit"]');
+            // Processar envio
+            const form = document.getElementById('formulario');
+            const formData = new FormData(form);
+            const submitButton = form.querySelector('button[type="submit"]');
             
             try {
                 submitButton.disabled = true;
                 submitButton.innerHTML = 'Enviando...';
                 
-                const response = await fetch(this.action, {
+                const response = await fetch(form.action, {
                     method: 'POST',
                     body: formData
                 });
 
                 if (response.ok) {
-                    this.style.display = 'none';
+                    form.style.display = 'none';
                     document.getElementById('mensagemSucesso').style.display = 'block';
-                    
                     setTimeout(() => {
-                        this.reset();
-                        this.style.display = 'block';
+                        form.reset();
+                        form.style.display = 'block';
                         document.getElementById('mensagemSucesso').style.display = 'none';
-                        document.getElementById('subgrupo_tecnicas').style.display = 'none';
-                        document.getElementById('subgrupo_fisico').style.display = 'none';
                     }, 5000);
-                } else {
-                    throw new Error('Falha no envio');
                 }
             } catch (error) {
-                alert('Erro ao enviar solicitação. Por favor, tente novamente.');
+                alert('Erro no envio. Tente novamente.');
             } finally {
                 submitButton.disabled = false;
                 submitButton.innerHTML = 'Enviar Solicitação';
             }
-        });
+        }
 
-        // Bloqueio de datas passadas
-        document.addEventListener('DOMContentLoaded', function() {
+        // Event Listeners
+        document.getElementById('formulario').addEventListener('submit', validarFormulario);
+        
+        // Bloquear datas passadas
+        document.addEventListener('DOMContentLoaded', () => {
             const dataInput = document.getElementById('data');
-            const hoje = new Date().toISOString().split('T')[0];
-            dataInput.min = hoje;
+            dataInput.min = new Date().toISOString().split('T')[0];
         });
     </script>
 </body>
