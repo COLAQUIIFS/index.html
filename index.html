@@ -66,12 +66,9 @@
             <li>Em caso de dúvidas, entre em contato com a coordenação técnica do laboratório.</li>
         </ul>
 
-        <form id="formulario" action="https://formsubmit.co/colaqui.aracaju@ifs.edu.br" method="POST" onsubmit="return validarSelecao()">
-            <!-- Configurações do FormSubmit -->
+        <form id="formulario" action="https://formsubmit.co/colaqui.aracaju@ifs.edu.br" method="POST">
             <input type="hidden" name="_captcha" value="false">
             <input type="hidden" name="_template" value="table">
-
-            <!-- Campo para atualizar o assunto com o nome do docente -->
             <input type="hidden" name="_subject" id="subject" value="Solicitação de reserva - Docente: ">
 
             <label for="docente">Nome do Docente:</label>
@@ -81,7 +78,7 @@
             <input type="email" id="emailDocente" name="E-mail para Confirmação" placeholder="email@exemplo.com">
 
             <label for="data">Data da prática:</label>
-            <input type="date" id="data" name="Data da prática" required>
+            <input type="date" id="data" name="Data da prática" required min="">
 
             <label for="hora">Hora da prática:</label>
             <input type="time" id="hora" name="Hora da prática" required>
@@ -123,6 +120,7 @@
     </div>
 
     <script>
+        // Funções de subgrupo (mantidas do original)
         function mostrarSubgrupo() {
             const atividade = document.getElementById('atividade').value;
             document.getElementById('subgrupo_tecnicas').style.display = 'none';
@@ -135,24 +133,94 @@
             }
         }
 
-        function validarSelecao() {
+        // Validação de datas e horas (novo)
+        function isDiaUtil(date) {
+            const dia = date.getDay();
+            return dia !== 0 && dia !== 6; // 0 = Domingo, 6 = Sábado
+        }
+
+        function ajustarParaHorarioComercial(date) {
+            const novaData = new Date(date);
+            const hora = novaData.getHours();
+            
+            if (hora >= 19) {
+                novaData.setDate(novaData.getDate() + 1);
+                novaData.setHours(7, 0, 0, 0);
+            } else if (hora < 7) {
+                novaData.setHours(7, 0, 0, 0);
+            }
+            return novaData;
+        }
+
+        function calcularHorasUteisRestantes(dataSelecionada, horaSelecionada) {
+            let dataInicio = ajustarParaHorarioComercial(new Date());
+            let dataFim = ajustarParaHorarioComercial(new Date(`${dataSelecionada}T${horaSelecionada}`));
+            
+            let horasUteis = 0;
+            let dataAtual = new Date(dataInicio);
+
+            while (dataAtual < dataFim) {
+                if (isDiaUtil(dataAtual)) {
+                    const horaAtual = dataAtual.getHours();
+                    if (horaAtual >= 7 && horaAtual < 19) {
+                        horasUteis++;
+                    }
+                }
+                dataAtual.setTime(dataAtual.getTime() + 3600000);
+            }
+            
+            return horasUteis;
+        }
+
+        // Validação principal
+        function validarFormulario() {
             const atividade = document.getElementById("atividade").value;
-            if (!atividade) {
-                alert("Selecione uma atividade.");
+            const data = document.getElementById("data").value;
+            const hora = document.getElementById("hora").value;
+            
+            if (!atividade || !data || !hora) {
+                alert("Preencha todos os campos obrigatórios.");
                 return false;
             }
+            
+            const horasUteis = calcularHorasUteisRestantes(data, hora);
+            
+            if (horasUteis < 48) {
+                const confirmar = confirm(
+                    `ATENÇÃO: Prática agendada com ${horasUteis} horas úteis de antecedência!\n\n` +
+                    '• Horário comercial: 7h às 19h (dias úteis)\n' +
+                    '• Pedidos após 19h considerados no próximo dia útil\n\n' +
+                    'Deseja solicitar mesmo assim?'
+                );
+                
+                return confirmar;
+            }
+            
             return true;
         }
 
-        // Atualiza o assunto do email com o nome do docente antes do envio
+        // Event listeners
         document.getElementById('formulario').addEventListener('submit', function(event) {
+            if (!validarFormulario()) {
+                event.preventDefault();
+                return;
+            }
+            
             const docente = document.getElementById('docente').value.trim();
-            if (docente.length === 0) {
+            if (!docente) {
                 alert("Por favor, preencha o nome do docente.");
                 event.preventDefault();
                 return;
             }
+            
             document.getElementById('subject').value = `Solicitação de reserva - Docente: ${docente}`;
+        });
+
+        // Bloqueio de datas passadas
+        document.addEventListener('DOMContentLoaded', function() {
+            const dataInput = document.getElementById('data');
+            const hoje = new Date().toISOString().split('T')[0];
+            dataInput.min = hoje;
         });
     </script>
 </body>
